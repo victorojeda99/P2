@@ -6,11 +6,8 @@
 #include "vad.h"
 
 const float FRAME_TIME = 10.0F; /* in ms. */
-const int T_VOZ_UNDEF=1; 
-const int T_SIL_UNDEF=11; /*cambiar*/
-const int N_INIT=13;
-const float UMBRAL_K0 = 0.9; /*cambiar*/
-const float UMBRAL_K1 = 4.72; /*cambiar*/
+const int   FRAME_SILENCE_UNDEF=17; /*cambiar*/
+const float THRESHOLD_K1 = 4.20; /*cambiar*/
 
 
 
@@ -66,7 +63,6 @@ VAD_DATA * vad_open(float rate, float alfa0) {
   vad_data->sampling_rate = rate;
   vad_data->frame_length = rate * FRAME_TIME * 1e-3;
   vad_data->k0 = 0;
-  vad_data->k1 = 0;
   vad_data->last_feature = 0;
   vad_data->last_change = 0;
   vad_data->frame = 0;
@@ -105,14 +101,7 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
   switch (vad_data->state) {
     case ST_INIT:
       vad_data->k0 = f.p + vad_data->alfa0;
-      vad_data->k1 = vad_data->k0 + vad_data->alfa0;
       vad_data->state = ST_AUX_SILENCE;
-/*      if(vad_data->frame < N_INIT){
-        vad_data->k0 = pow(10, f.p/10);
-      }else{
-        vad_data->k0 = 10*log10(vad_data->k0 / N_INIT)*UMBRAL_K0;
-        vad_data->state=ST_AUX_SILENCE;
-      }*/
       break;
 
     case ST_SILENCE:
@@ -131,17 +120,17 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
       break;
 
     case ST_AUX_SILENCE:
-      if (f.p > (vad_data->k0 + UMBRAL_K1)){
+      if (f.p > (vad_data->k0 + THRESHOLD_K1)){
         vad_data->state = ST_VOICE;
-      }else if((vad_data->frame - vad_data->last_change) == T_SIL_UNDEF){
+      }else if((vad_data->frame - vad_data->last_change) == FRAME_SILENCE_UNDEF){
         vad_data->state = ST_SILENCE;
       }
     break;
 
     case ST_AUX_VOICE:
-      if (f.p < (vad_data->k0 + UMBRAL_K1)){
+      if (f.p < (vad_data->k0 + THRESHOLD_K1)){
         vad_data->state = ST_SILENCE;
-      }else if((vad_data->frame - vad_data->last_change) == T_VOZ_UNDEF){
+      }else{
         vad_data->state = ST_VOICE;
       }
     break;
