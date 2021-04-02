@@ -149,15 +149,15 @@ Ejercicios
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal tan
   exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 
-## Fichero vad.h
-### Nuevos estados
+###  Fichero vad.h
+####  Nuevos estados
 Añadimos dos estados auxiliares a las tramas de voz y silencio, para determinar a que estado (Silencio o Voz)
 moverse:
 ```c
 typedef enum {ST_UNDEF=0, ST_SILENCE, ST_VOICE, ST_INIT, ST_AUX_SILENCE, ST_AUX_VOICE} VAD_STATE;
 ```
 
-### Nuevas variables de VAD_DATA
+####  Nuevas variables de VAD_DATA
 Añadimos nuevas variables para ayudarnos ha realizar el código:
 ```c
 typedef struct {
@@ -169,8 +169,8 @@ typedef struct {
 } VAD_DATA;
 ```
 
-## Fichero vad.c
-### Nuevas constantes
+###  Fichero vad.c
+####  Nuevas constantes
 La primera constante determinará el número máximo de tramas para el estado auxiliar de silencio, y la 
 segunda constante marcará el umbral K1.
 ```c
@@ -178,7 +178,7 @@ const int   FRAME_SILENCE_UNDEF = 17;
 const float THRESHOLD_K1 = 4.20; 
 ```
 
-### Cálculo de las medidas estadísticas de la señal
+####  Cálculo de las medidas estadísticas de la señal
 Calculamos la potencia media, amplitud media y la tasa de cruces por cero (ZCR), mediante la función 
 pav_analysis.c, realizada en la primera practica:
 ```c
@@ -195,7 +195,7 @@ Features compute_features(const float *x, int N) {
 }
 ```
 
-### Función vad_open
+####  Función vad_open
 Iniciamos las variables de VAD_DATA:
 ```c
 VAD_DATA * vad_open(float rate, float alfa0) {
@@ -219,7 +219,7 @@ Las nuevas variables añadidas son:
 - last_change: indica el valor de la trama anterior.
 - frame: Indica la posición de la trama actual.
 
-### Función vad_close:
+####  Función vad_close:
 Asignamos el úlitmo estado:
 ```c
 VAD_STATE vad_close(VAD_DATA *vad_data) {
@@ -232,7 +232,7 @@ VAD_STATE vad_close(VAD_DATA *vad_data) {
   return state;
 }
 ```
-### Máquina de estados
+####  Máquina de estados
 La máquina de estados determina qué tipo de trama se trata (Silencio o Voz) y funciona de la siguiente manera: 
 Primero se obtiene el valor de la trama anterior a la que se va a tratar, y se guarda el valor que tiene.
 A continuación, miramos el valor del estado en el que está la trama que hemos de tratar. 
@@ -303,14 +303,14 @@ Si el estado es ST_INIT, se devuelve el estado ST_SILENCE, por lo que se supone 
 será de silencio.
 Para los otros casos, se devolverá el estado ST_UNDEF.
 
-## Fichero main_vad.c
-### Nueva variable alfa0
+###  Fichero main_vad.c
+####  Nueva variable alfa0
 Creamos la variable alfa0 y la iniciamos a su valor correspondiente:
 ```c
 float alfa0 = atof(args.alfa0);
 }
 ```
-### Muestra de resultados
+####  Muestra de resultados
 Asignamos como last_state el estado ST_SILENCE.
 Si el estado que se devuelve es ST_UNDEF o es el mismo al estado anterior, no se mostrará
 el resultado. De esta manera solo se mostrarán los cambios de silencio a voz, o diceversa.
