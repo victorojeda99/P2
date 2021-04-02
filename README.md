@@ -150,7 +150,7 @@ Ejercicios
   exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 
 ## Fichero vad.h
-###Nuevos estados
+### Nuevos estados
 Añadimos dos estados auxiliares a las tramas de voz y silencio, para determinar a que estado (Silencio o Voz)
 moverse:
 ```c
