@@ -104,7 +104,9 @@ Ejercicios
 - Etiquete manualmente los segmentos de voz y silencio del fichero grabado al efecto. Inserte, a 
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
-  
+
+  <img src="/img/img1.png" width="1200" align="center">
+
   Si comparamos la forma de la "curva de potencia" observamos que se estanca en sitios clasificados como
   silencio.
   Aportación: hemos adaptado la práctica 1 para que genere 4 ficheros: uno para la potencia, amplitud,
@@ -121,7 +123,15 @@ Ejercicios
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
 
-	En esta señal, la duración mínima de silencio es de 0.3 segundos y la de voz es de .
+	<img src="/img/img2.png" width="1200" align="center">
+
+	En esta señal, la duración mínima de silencio es de 0.2925 segundos y la de voz es de 1.097.
+
+	<img src="/img/img3.png" width="1200" align="center">
+	
+	<img src="/img/img4.png" width="1200" align="center">
+
+
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 
@@ -144,6 +154,9 @@ Ejercicios
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
 
+<img src="/img/img5.png" width="1200" align="center">
+
+
 En la imagen superior vemos de abajo arriba: el índice temporal, el archivo .wav en forma de waveform, en 
 vad generado con nuestro código y finalmente en la parte superior el .lab que generamos nosotros con el
 etiquetado manual.
@@ -158,6 +171,8 @@ aunque el resultado es aceptable.
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
+
+  <img src="/img/img6.png" width="1200" align="center">
 
   Observamos que el resultado obtenido es del 90.436% por lo que menos del 10% de las tramas han sido mal
   detectadas.
@@ -217,7 +232,11 @@ la diferenciación de tramas de silencio y voz se vean más claras.
 Para la nueva señal, que hemos denominado “PAV_2301_01.wav”, observamos como los espacios entre tramas de
 voz y silencio están más diferenciados, lo cual nos ayudará a la hora de observar los resultados obtenidos.
 
+<img src="/img/img7.png" width="1200" align="center">
+
 El resultado obtenido es el siguiente:
+
+<img src="/img/img8.png" width="1200" align="center">
 
 Observamos que en esta señal se aprecia mejor la similitudes de los ficheros de transcripción, y que en
 algunas tramas funciona de manera muy eficaz. A vista, parece ser que al programa le cuesta más
@@ -249,7 +268,3 @@ diferenciar cuando se termina una trama de voz, y pasa a ser silencio, que a la 
 Recuerde comprobar que el repositorio cuenta con los códigos correctos y en condiciones de ser 
 correctamente compilados con la orden `meson bin; ninja -C bin`. El programa generado (`bin/vad`) será
 el usado, sin más opciones, para realizar la evaluación *ciega* del sistema.
-
-### hello world
-## hello world
-# hello world
