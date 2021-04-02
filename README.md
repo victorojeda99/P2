@@ -104,6 +104,12 @@ Ejercicios
 - Etiquete manualmente los segmentos de voz y silencio del fichero grabado al efecto. Inserte, a 
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
+  
+  Si comparamos la forma de la "curva de potencia" observamos que se estanca en sitios clasificados como
+  silencio.
+  Aportación: hemos adaptado la práctica 1 para que genere 4 ficheros: uno para la potencia, amplitud,
+  tasa de cruces por cero y uno con los tres valores en columnas distintas. (ver en "Trabajos de
+  Ampliación")
 
 
 - A la vista de la gráfica, indique qué valores considera adecuados para las magnitudes siguientes:
@@ -111,9 +117,23 @@ Ejercicios
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
 
+	  El incremento del nivel de potencia es aproximadamente de 15 dB
+
 	* Duración mínima razonable de los segmentos de voz y silencio.
 
+	En esta señal, la duración mínima de silencio es de 0.3 segundos y la de voz es de .
+
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
+
+	Observamos que la tasa de cruces por cero aumenta en los tiempos de silencio, por lo que deducimos que
+	se comporta en función de la frecuencia. Comprobamos que cuando el sonido es fricativo, aumenta la
+	frecuencia y por tanto la tasa de cruces por cero también lo hace. Asimismo sucede lo mismo a la
+	inversa con los sonidos sonoros (la voz). Al encontrarse con un sonido sonoro, como la frecuencia
+	queda considerablemente disminuida, la tasa de cruces por cero disminuye. En el caso de no tener
+	sonido vemos que la tasa de cruces por cero se queda en un punto medio entre los dos anteriores casos.
+
+	La desventaja es que para los sonidos sordos, que si se consideran pertenecientes a tramas de voz, se
+	detectan como silencio.
 
 
 ### Desarrollo del detector de actividad vocal
@@ -124,15 +144,84 @@ Ejercicios
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
 
+En la imagen superior vemos de abajo arriba: el índice temporal, el archivo .wav en forma de waveform, en 
+vad generado con nuestro código y finalmente en la parte superior el .lab que generamos nosotros con el
+etiquetado manual.
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
+
+Hay discrepancias ya que el código a veces detecta como silencio partes de voz sorda. pero todos los 
+tramos de silencio los detecta bien. Es verdad que con esta señal el resultado no se observa con claridad, 
+ya que tiene mucho ruido ocasional de fondo, pero en general pensamos que la detección es mejorable, 
+aunque el resultado es aceptable.
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
 
+  Observamos que el resultado obtenido es del 90.436% por lo que menos del 10% de las tramas han sido mal
+  detectadas.
+
 
 ### Trabajos de ampliación
+
+#### Adaptación P1
+Hemos modificado el código de la primera práctica p1.c para que nos devuelva 4 ficheros: uno para la
+potencia, amplitud, tasa de cruces por cero y uno con los tres valores en columnas distintas. A
+continuación mostramos los cambios realizados:
+
+Hemos creado 4 variables de ficheros de salida:
+```c
+FILE *fpOut;
+FILE *fpPower;
+FILE *fpAmp;
+FILE *fpZCR;
+```
+
+Escribimos con el siguiente código en los ficheros:
+```c
+trm = 0;
+fpOut = fopen("resultados.txt", "w");
+fpPower = fopen("power.txt", "w");
+fpZCR = fopen("zcr.txt", "w");
+fpAmp = fopen("amp.txt", "w");
+
+fprintf(fpOut,"\tPotencia media(dB):\tAmplitud media:\tTasa de cruces por cero:\n");
+while (lee_wave(buffer, sizeof(*buffer), N, fpWave) == N) {
+    for (int n = 0; n < N; n++) x[n] = buffer[n] / (float) (1 << 15);
+
+    fprintf(fpOut,"%d\t%f\t\t\t%f\t\t%f\n", trm, compute_power(x, N),
+    compute_am(x, N),
+    compute_zcr(x, N, fm));
+    fprintf(fpPower,"%f\n",compute_power(x,N));
+    fprintf(fpZCR,"%f\n",compute_zcr(x, N, fm));
+    fprintf(fpAmp,"%f\n",compute_am(x, N));
+    trm += 1;
+}
+```
+
+Cerramos los ficheros:
+```c
+fclose(fpOut);
+fclose(fpPower);
+fclose(fpZCR);
+fclose(fpAmp);
+```
+
+#### Resultados con una nueva señal
+Como la señal grabada inicialmente, en la P1, no se distinguían muy bien las tramas de voz y de sonido, ya
+que contenía mucho ruido ocasional de fondo y las palabras tenían poco espacio de silencio entre ellas, y
+que obtuvimos un  buen resultado en la base de datos del db.v4, hemos realizado un nuevo audio en el que
+la diferenciación de tramas de silencio y voz se vean más claras.
+
+Para la nueva señal, que hemos denominado “PAV_2301_01.wav”, observamos como los espacios entre tramas de
+voz y silencio están más diferenciados, lo cual nos ayudará a la hora de observar los resultados obtenidos.
+
+El resultado obtenido es el siguiente:
+
+Observamos que en esta señal se aprecia mejor la similitudes de los ficheros de transcripción, y que en
+algunas tramas funciona de manera muy eficaz. A vista, parece ser que al programa le cuesta más
+diferenciar cuando se termina una trama de voz, y pasa a ser silencio, que a la inversa.
 
 #### Cancelación del ruido en los segmentos de silencio
 
