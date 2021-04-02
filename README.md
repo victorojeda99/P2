@@ -123,7 +123,7 @@ Ejercicios
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
 
-	<img src="/img/img2.png" width="1200" align="center">
+	<img src="/img/img2.png" width="600" align="center">
 
 	En esta señal, la duración mínima de silencio es de 0.2925 segundos y la de voz es de 1.097.
 
