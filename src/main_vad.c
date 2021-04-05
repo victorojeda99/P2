@@ -86,8 +86,6 @@ int main(int argc, char *argv[]) {
     state = vad(vad_data, buffer);
     if (verbose & DEBUG_VAD) vad_show_state(vad_data, stdout);
 
-    /* TODO: print only SILENCE and VOICE labels */
-    /* As it is, it prints UNDEF segments but is should be merge to the proper value */
     if (state != last_state && state != ST_UNDEF) {
       if (t != last_t)
         fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration, state2str(last_state));

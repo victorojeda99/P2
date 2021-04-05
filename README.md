@@ -223,9 +223,6 @@ Las nuevas variables añadidas son:
 Asignamos el úlitmo estado:
 ```c
 VAD_STATE vad_close(VAD_DATA *vad_data) {
-  /* 
-   * TODO: decide what to do with the last undecided frames
-   */
   VAD_STATE state = vad_data->previous_state;
 
   free(vad_data);
@@ -327,9 +324,6 @@ last_state = ST_SILENCE;
 
     state = vad(vad_data, buffer);
     if (verbose & DEBUG_VAD) vad_show_state(vad_data, stdout);
-
-    /* TODO: print only SILENCE and VOICE labels */
-    /* As it is, it prints UNDEF segments but is should be merge to the proper value */
     if (state != last_state && state != ST_UNDEF) {
       if (t != last_t)
         fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration, state2str(last_state));
