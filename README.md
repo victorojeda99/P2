@@ -158,7 +158,7 @@ typedef enum {ST_UNDEF=0, ST_SILENCE, ST_VOICE, ST_INIT, ST_AUX_SILENCE, ST_AUX_
 ```
 
 ####  Nuevas variables de VAD_DATA
-Añadimos nuevas variables para ayudarnos ha realizar el código:
+Añadimos nuevas variables para ayudarnos a realizar el código:
 ```c
 typedef struct {
   VAD_STATE state, previous_state;
@@ -180,7 +180,7 @@ const float THRESHOLD_K1 = 4.20;
 
 ####  Cálculo de las medidas estadísticas de la señal
 Calculamos la potencia media, amplitud media y la tasa de cruces por cero (ZCR), mediante la función 
-pav_analysis.c, realizada en la primera practica:
+pav_analysis.c, realizada en la primera práctica:
 ```c
 Features compute_features(const float *x, int N) {
   /*
@@ -217,10 +217,10 @@ Las nuevas variables añadidas son:
 - alfa0: valor añadido al umbral.
 - k0: umbral de potencia.
 - last_change: indica el valor de la trama anterior.
-- frame: Indica la posición de la trama actual.
+- frame: indica la posición de la trama actual.
 
 ####  Función vad_close:
-Asignamos el úlitmo estado:
+Asignamos el último estado:
 ```c
 VAD_STATE vad_close(VAD_DATA *vad_data) {
   VAD_STATE state = vad_data->previous_state;
@@ -230,14 +230,14 @@ VAD_STATE vad_close(VAD_DATA *vad_data) {
 }
 ```
 ####  Máquina de estados
-La máquina de estados determina qué tipo de trama se trata (Silencio o Voz) y funciona de la siguiente manera: 
+La máquina de estados determina de que tipo de trama se trata (Silencio o Voz) y funciona de la siguiente manera: 
 Primero se obtiene el valor de la trama anterior a la que se va a tratar, y se guarda el valor que tiene.
 A continuación, miramos el valor del estado en el que está la trama que hemos de tratar. 
 Si se encuentra en el estado inicial (ST_INIT), calculamos el valor del  umbral ko, y pasamos al estado ST_AUX_SILENCE.
 En el estado ST_AUX_SILENCE se valida si la trama irá al estado de Silencio o de Voz, en el estado ST_AUX_VOICE se realiza la misma
 validación, pero a la inversa.
 En el estado ST_SILENCE se comprueba si la potencia de la trama se encuentra por debajo del umbral ko, y para el caso del
-estado ST_VOICE a se hace la comprobación a la inversa.
+estado ST_VOICE también se hace la comprobación a la inversa.
 
 ```c
 VAD_STATE vad(VAD_DATA *vad_data, float *x) {
@@ -295,22 +295,21 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
 
 }
 ```
-Finalmente, si el estado al terminar el switch es de ST_SILENCE o ST_VOICE, se devuelve el estado acrual.
+Finalmente, si el estado al terminar el switch es de ST_SILENCE o ST_VOICE, se devuelve el estado actual.
 Si el estado es ST_INIT, se devuelve el estado ST_SILENCE, por lo que se supone que la primera trama siempre
 será de silencio.
 Para los otros casos, se devolverá el estado ST_UNDEF.
 
 ###  Fichero main_vad.c
 ####  Nueva variable alfa0
-Creamos la variable alfa0 y la iniciamos a su valor correspondiente:
+Creamos la variable alfa0 y la iniciamos con su valor correspondiente:
 ```c
 float alfa0 = atof(args.alfa0);
-}
 ```
 ####  Muestra de resultados
 Asignamos como last_state el estado ST_SILENCE.
 Si el estado que se devuelve es ST_UNDEF o es el mismo al estado anterior, no se mostrará
-el resultado. De esta manera solo se mostrarán los cambios de silencio a voz, o diceversa.
+el resultado. De esta manera solo veremos los cambios de silencio a voz, y viceversa.
 ```c
 last_state = ST_SILENCE;
 
